@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Pixel Clock</title>
+
+<style>
+:root{
+    --clock-color:#00ff88;
+    --bg:#1f1f1f;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:var(--bg);
+    font-family:monospace;
+}
+
+body{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+}
+
+#clock{
+    flex:1;
+
+    width:100%;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    color:var(--clock-color);
+
+    font-weight:900;
+
+    font-size:28vw;
+
+    letter-spacing:0.05em;
+
+    text-shadow:
+        4px 0 currentColor,
+        -4px 0 currentColor,
+        0 4px currentColor,
+        0 -4px currentColor;
+
+    user-select:none;
+}
+
+#controls{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+#settingsBtn{
+    border:none;
+
+    background:#4a4a4a;
+
+    color:#d8d8d8;
+
+    padding:10px 20px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    opacity:.7;
+}
+
+#settingsBtn:hover{
+    opacity:1;
+}
+
+#panel{
+
+    display:none;
+
+    background:#2c2c2c;
+
+    border-radius:10px;
+
+    padding:12px;
+
+    color:#d0d0d0;
+
+    gap:16px;
+
+    align-items:center;
+}
+
+#panel.show{
+    display:flex;
+}
+
+#panel label{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:14px;
+}
+
+input[type=color]{
+    width:40px;
+    height:30px;
+    border:none;
+    background:none;
+}
+
+input[type=range]{
+    width:120px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="clock">00:00</div>
+
+<div id="controls">
+
+    <button id="settingsBtn">
+        设置
+    </button>
+
+    <div id="panel">
+
+        <label>
+            颜色
+            <input type="color" id="colorPicker">
+        </label>
+
+        <label>
+            大小
+            <input
+                type="range"
+                id="sizeSlider"
+                min="10"
+                max="40"
+                value="28">
+        </label>
+
+    </div>
+
+</div>
+
+<script>
+
+const clock = document.getElementById("clock");
+const picker = document.getElementById("colorPicker");
+const slider = document.getElementById("sizeSlider");
+const panel = document.getElementById("panel");
+
+function updateClock(){
+
+    const now = new Date();
+
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+
+    clock.textContent = `${h}:${m}`;
+}
+
+updateClock();
+setInterval(updateClock,1000);
+
+const savedColor =
+localStorage.getItem("clockColor");
+
+if(savedColor){
+
+    document.documentElement
+    .style
+    .setProperty(
+        "--clock-color",
+        savedColor
+    );
+
+    picker.value = savedColor;
+}
+
+picker.addEventListener("input",(e)=>{
+
+    const color = e.target.value;
+
+    document.documentElement
+    .style
+    .setProperty(
+        "--clock-color",
+        color
+    );
+
+    localStorage.setItem(
+        "clockColor",
+        color
+    );
+
+});
+
+const savedSize =
+localStorage.getItem("clockSize");
+
+if(savedSize){
+
+    clock.style.fontSize =
+        savedSize + "vw";
+
+    slider.value = savedSize;
+}
+
+slider.addEventListener("input",(e)=>{
+
+    const size = e.target.value;
+
+    clock.style.fontSize =
+        size + "vw";
+
+    localStorage.setItem(
+        "clockSize",
+        size
+    );
+
+});
+
+document
+.getElementById("settingsBtn")
+.addEventListener("click",()=>{
+
+    panel.classList.toggle("show");
+
+});
+
+</script>
+
+</body>
+</html>
