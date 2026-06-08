@@ -35,7 +35,6 @@ body{
 
 #clock{
     flex:1;
-
     width:100%;
 
     display:flex;
@@ -69,18 +68,12 @@ body{
 
 #settingsBtn{
     border:none;
-
     background:#4a4a4a;
-
     color:#d8d8d8;
-
     padding:10px 20px;
-
     border-radius:8px;
-
     cursor:pointer;
-
-    opacity:.7;
+    opacity:.75;
 }
 
 #settingsBtn:hover{
@@ -88,7 +81,6 @@ body{
 }
 
 #panel{
-
     display:none;
 
     background:#2c2c2c;
@@ -102,6 +94,8 @@ body{
     gap:16px;
 
     align-items:center;
+
+    flex-wrap:wrap;
 }
 
 #panel.show{
@@ -124,6 +118,25 @@ input[type=color]{
 
 input[type=range]{
     width:120px;
+}
+
+#fullscreenBtn{
+
+    border:none;
+
+    background:#555;
+
+    color:white;
+
+    padding:8px 14px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+}
+
+#fullscreenBtn:hover{
+    opacity:.9;
 }
 </style>
 </head>
@@ -155,6 +168,10 @@ input[type=range]{
                 value="28">
         </label>
 
+        <button id="fullscreenBtn">
+            Full Screen
+        </button>
+
     </div>
 
 </div>
@@ -178,6 +195,8 @@ function updateClock(){
 
 updateClock();
 setInterval(updateClock,1000);
+
+/* ---------- 颜色 ---------- */
 
 const savedColor =
 localStorage.getItem("clockColor");
@@ -212,6 +231,8 @@ picker.addEventListener("input",(e)=>{
 
 });
 
+/* ---------- 字体大小 ---------- */
+
 const savedSize =
 localStorage.getItem("clockSize");
 
@@ -237,11 +258,39 @@ slider.addEventListener("input",(e)=>{
 
 });
 
+/* ---------- 设置面板 ---------- */
+
 document
 .getElementById("settingsBtn")
 .addEventListener("click",()=>{
 
     panel.classList.toggle("show");
+
+});
+
+/* ---------- 全屏 ---------- */
+
+document
+.getElementById("fullscreenBtn")
+.addEventListener("click",async()=>{
+
+    try{
+
+        if(!document.fullscreenElement){
+
+            await document.documentElement
+                .requestFullscreen();
+
+        }else{
+
+            await document
+                .exitFullscreen();
+        }
+
+    }catch(err){
+
+        alert("当前浏览器不支持全屏");
+    }
 
 });
 
